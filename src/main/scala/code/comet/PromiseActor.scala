@@ -17,6 +17,8 @@ import net.liftweb.http.js.JsCmds._Noop
 import net.liftweb.actor.LAScheduler
 import code.lib.JqJsCmdsEx
 
+
+// From LiftSession in Lift branch v30
 trait PromiseActor extends CometActor with Loggable {
    ca =>
 

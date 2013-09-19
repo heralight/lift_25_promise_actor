@@ -5,13 +5,38 @@
     <title>Home</title>
 </head>
 <body class="lift:content_id=main">
-<div id="main" class="lift:surround?with=default;at=content">
+<div id="main" class="lift:surround?with=default;at=content"  ng-app ng-controller="PromiseCtrl">
+    <lift:head>
     <script type="text/javascript" src="/static/liftAjax.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular.min.js"></script>
     <script  type="text/javascript" >
         function simSave() {
             serverFuncs.save({path:"sdsd", text: "sdsd"});
         }
+
+        function PromiseCtrl($scope) {
+            $scope.loadTxt = "FileName sample"
+
+            // Save the file
+            $scope.save = function() {
+                serverFuncs.save({path: $scope.curFile, text: $scope.curText});
+            };
+
+            // load the named file and update the model
+            // when the file arrives
+            $scope.load = function(fn) {
+                serverFuncs.load(fn).then(function(v) {
+                    $scope.$apply(function() {
+                        $scope.curFile = fn;
+                        $scope.curText = v;
+                    });
+                });
+            }
+        }
+
+
     </script>
+    </lift:head>
 
     <h2>Welcome to your project!</h2>
 
@@ -21,14 +46,17 @@
 	</span>
     </p>
 
+    <h2>Test Lift Promise Actor with Lift 2.5 and AngularJs</h2>
 
     <lift:comet type="PromiseSampleActor">
-        <span id="a"></span>
         <span id="serverFunc"></span>
-        <span id="b"></span>
     </lift:comet>
 
-    <button onclick="simSave()">Send Save </button>
+    <input type="text" ng-model="loadTxt"/>
+    <button ng-click="load(loadTxt)">Send</button>
+    <p>{{ curFile }}</p>
+    <br>
+    <p>{{ curText }}</p>
 </div>
 </body>
 </html>
