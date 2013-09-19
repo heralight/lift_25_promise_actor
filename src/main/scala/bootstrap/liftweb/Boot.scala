@@ -75,6 +75,9 @@ class Boot {
     // What is the function to test if a user is logged in?
     LiftRules.loggedInTest = Full(() => User.loggedIn_?)
 
+    // remove LiftAjax.js gen, now WE MUST concat to script (see app.a.js)
+    LiftRules.autoIncludeAjaxCalc.default.set(() => (session: LiftSession) => false)
+
     // Use HTML5 for rendering
     LiftRules.htmlProperties.default.set((r: Req) =>
       new Html5Properties(r.userAgent))    

@@ -1,18 +1,35 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type"/>
     <title>Home</title>
-  </head>
-  <body class="lift:content_id=main">
-    <div id="main" class="lift:surround?with=default;at=content">
-      <h2>Welcome to your project!</h2>
-      <p>
+</head>
+<body class="lift:content_id=main">
+<div id="main" class="lift:surround?with=default;at=content">
+    <script type="text/javascript" src="/static/liftAjax.js"></script>
+    <script  type="text/javascript" >
+        function simSave() {
+            serverFuncs.save({path:"sdsd", text: "sdsd"});
+        }
+    </script>
+
+    <h2>Welcome to your project!</h2>
+
+    <p>
 	<span class="lift:helloWorld.howdy">
 	  Welcome to your Lift app at <span id="time">Time goes here</span>
 	</span>
-      </p>
-    </div>
-  </body>
+    </p>
+
+
+    <lift:comet type="PromiseSampleActor">
+        <span id="a"></span>
+        <span id="serverFunc"></span>
+        <span id="b"></span>
+    </lift:comet>
+
+    <button onclick="simSave()">Send Save </button>
+</div>
+</body>
 </html>
 
