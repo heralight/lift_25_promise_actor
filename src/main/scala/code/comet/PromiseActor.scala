@@ -19,8 +19,8 @@ import code.lib.JqJsCmdsEx
 
 
 // From LiftSession in Lift branch v30
-trait PromiseActor extends CometActor with Loggable {
-   ca =>
+class PromiseActor extends CometActor with Loggable {
+  ca =>
 
   /**
    * It's the main method to override, to define what is rendered by the CometActor
@@ -66,40 +66,44 @@ trait PromiseActor extends CometActor with Loggable {
     case _ =>
 
   }
-  override def sendInitialReq_? = true
 
-  var initialReq : Box[Req] = Empty
+}
+//  override def sendInitialReq_? = true
+//
+//  var initialReq : Box[Req] = Empty
+//
+////  def getReq(): Box[Req] =  {
+////    logger.info("Get Req: " + initialReq.isEmpty)
+////    initialReq
+////  }
+//
+//  override protected def captureInitialReq(initialReq: Box[Req]) {
+//    logger.info("Set Req: " + initialReq.isEmpty)
+//    this.initialReq = initialReq
+//  }
 
-  def getReq(): Box[Req] =  {
-    logger.info("Get Req: " + initialReq.isEmpty)
-    initialReq
-  }
-
-  override protected def captureInitialReq(initialReq: Box[Req]) {
-    logger.info("Set Req: " + initialReq.isEmpty)
-    this.initialReq = initialReq
-  }
-
+trait PromiseSnippet extends StatefulSnippet with LazyLoggable {
   val session = S.session.get
 
   def buildRoundtrip(info: Seq[RoundTripInfo]): JsExp = {
     session.testStatefulFeature{
+      // val ca = S.currentCometActor.openOrThrowException("No CometActor Run")
 
 
 
 
       implicit val defaultFormats = DefaultFormats
 
-   //   ca ! PerformSetupComet2(Empty)
+      //   ca ! PerformSetupComet2(Empty)
 
       //ca ! SetDeltaPruner(lastWhenDeltaPruner)
 
-//      val node: Elem = ca.buildSpan(ca.renderClock, NodeSeq.Empty)
-//
-//      S.addCometAtEnd(node)
+      //      val node: Elem = ca.buildSpan(ca.renderClock, NodeSeq.Empty)
+      //
+      //      S.addCometAtEnd(node)
 
       //val currentReq: Box[Req] = S.request.map(_.snapshot)
-      val currentReq: Box[Req] = getReq()
+      //val currentReq: Box[Req] = getReq()
 
       // val renderVersion = RenderVersion.get
 
@@ -116,8 +120,9 @@ trait PromiseActor extends CometActor with Loggable {
 
       def localFunc(in: JValue): JsCmd = {
         LAScheduler.execute(() => {
-          session.executeInScope(currentReq, renderVersion)(
+          session.executeInScope(S.request.map(_.snapshot), renderVersion)(
             for {
+              ca <- session.findComet("PromiseActor", Full(S.attr("name") openOr "promise")) ?~ "Comet actor not found"
               JString(guid) <- in \ "guid"
               JString(name) <- in \ "name"
               func <- map.get(name)
@@ -236,11 +241,13 @@ trait PromiseActor extends CometActor with Loggable {
   }
 
 
-  private case class ItemMsg(guid: String, item: JValue)
-  private case class DoneMsg(guid: String)
-  private case class FailMsg(guid: String, msg: String)
+
 
 }
+
+private case class ItemMsg(guid: String, item: JValue)
+private case class DoneMsg(guid: String)
+private case class FailMsg(guid: String, msg: String)
 
 
 /**

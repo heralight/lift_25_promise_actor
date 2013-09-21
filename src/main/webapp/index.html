@@ -32,6 +32,15 @@
                     });
                 });
             }
+
+            $scope.load2 = function(fn) {
+                serverFuncs.load2(fn).then(function(v) {
+                    $scope.$apply(function() {
+                        $scope.curFile = fn;
+                        $scope.curText = v;
+                    });
+                });
+            }
         }
 
 
@@ -47,13 +56,16 @@
     </p>
 
     <h2>Test Lift Promise Actor with Lift 2.5 and AngularJs</h2>
+    <lift:comet type="PromiseActor" name="promise">
 
-    <lift:comet type="PromiseSampleActor">
-        <span id="serverFunc"></span>
     </lift:comet>
+    <div data-lift="PromiseSampleSnippet.render">
+        <span id="serverFunc"></span>
+    </div>
 
     <input type="text" ng-model="loadTxt"/>
-    <button ng-click="load(loadTxt)">Send</button>
+    <button ng-click="load(loadTxt)">Test No Problem</button>
+    <button ng-click="load2(loadTxt)">Test S.request is null</button>
     <p>{{ curFile }}</p>
     <br>
     <p>{{ curText }}</p>
